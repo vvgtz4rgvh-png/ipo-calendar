@@ -60,6 +60,16 @@ body {
   margin: 0 auto;
   min-height: 100dvh;
   padding: 0 16px calc(32px + env(safe-area-inset-bottom));
+  display: none;
+}
+html.unlocked .app {
+  display: block;
+}
+
+.header-actions {
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
 /* Header */
@@ -360,6 +370,193 @@ body {
   opacity: 1;
   transform: translate(-50%, 0);
 }
+
+/* Lock screen */
+#lock-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 20px;
+  background: var(--bg);
+  opacity: 1;
+  transition: opacity 0.2s ease;
+}
+#lock-overlay.unlocking { opacity: 0; }
+
+.lock-card {
+  width: 100%;
+  max-width: 320px;
+  background: var(--card);
+  border-radius: 20px;
+  box-shadow: var(--shadow);
+  padding: 28px 24px;
+  text-align: center;
+}
+.lock-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 50%;
+  background: var(--accent-soft);
+  color: var(--accent);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  margin: 0 auto 14px;
+}
+.lock-title { font-size: 17px; font-weight: 600; }
+.lock-sub { font-size: 13px; color: var(--text-sub); margin-top: 4px; margin-bottom: 18px; }
+
+#lock-form { display: flex; flex-direction: column; gap: 12px; }
+#lock-input {
+  width: 100%;
+  font-size: 16px;
+  padding: 12px 14px;
+  border-radius: 12px;
+  border: 1px solid var(--border);
+  background: var(--bg);
+  color: var(--text);
+  text-align: center;
+  font-family: inherit;
+}
+#lock-input:focus { outline: 2px solid var(--accent); outline-offset: 1px; }
+
+.lock-remember {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  font-size: 12px;
+  color: var(--text-sub);
+  cursor: pointer;
+}
+.lock-remember input { width: 14px; height: 14px; }
+
+.lock-submit {
+  border: none;
+  border-radius: 12px;
+  background: var(--accent);
+  color: #fff;
+  font-size: 15px;
+  font-weight: 600;
+  padding: 12px;
+  cursor: pointer;
+  font-family: inherit;
+}
+.lock-submit:active { transform: scale(0.98); }
+
+.lock-error {
+  margin-top: 12px;
+  font-size: 12px;
+  color: var(--red);
+}
+
+.shake { animation: shake 0.35s; }
+@keyframes shake {
+  0%, 100% { transform: translateX(0); }
+  25% { transform: translateX(-6px); }
+  75% { transform: translateX(6px); }
+}
+
+.broker-status.tappable {
+  background: var(--gray-soft);
+  border: none;
+  border-radius: 100px;
+  padding: 4px 10px;
+  font-size: 12px;
+  font-weight: 500;
+  color: var(--text-sub);
+  font-family: inherit;
+  cursor: pointer;
+}
+.broker-status.tappable:active { transform: scale(0.96); }
+
+.broker-choice-group { display: inline-flex; gap: 6px; }
+.broker-choice {
+  border: none;
+  border-radius: 100px;
+  padding: 4px 10px;
+  font-size: 12px;
+  font-weight: 600;
+  font-family: inherit;
+  cursor: pointer;
+}
+.broker-choice.win { background: var(--green-soft); color: var(--green); }
+.broker-choice.lose { background: var(--red-soft); color: var(--red); }
+.broker-choice:active { transform: scale(0.94); }
+
+.pending-dot {
+  display: inline-block;
+  width: 6px;
+  height: 6px;
+  border-radius: 50%;
+  background: var(--amber);
+  margin-left: 5px;
+  vertical-align: middle;
+}
+
+/* Report panel */
+#report-panel {
+  position: fixed;
+  left: 50%;
+  bottom: 16px;
+  transform: translateX(-50%);
+  width: calc(100% - 32px);
+  max-width: 440px;
+  background: var(--card);
+  border-radius: 16px;
+  box-shadow: var(--shadow);
+  padding: 14px;
+  z-index: 15;
+}
+.report-head {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 8px;
+}
+.report-title { font-size: 13px; font-weight: 600; }
+.report-clear {
+  border: none;
+  background: none;
+  color: var(--text-sub);
+  font-size: 12px;
+  cursor: pointer;
+  text-decoration: underline;
+  font-family: inherit;
+}
+#report-text {
+  width: 100%;
+  height: 64px;
+  resize: none;
+  border: 1px solid var(--border);
+  border-radius: 10px;
+  padding: 8px 10px;
+  font-size: 12px;
+  font-family: inherit;
+  background: var(--bg);
+  color: var(--text);
+  margin-bottom: 10px;
+}
+.report-copy {
+  width: 100%;
+  border: none;
+  border-radius: 12px;
+  background: var(--accent);
+  color: #fff;
+  font-size: 13px;
+  font-weight: 600;
+  padding: 10px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  cursor: pointer;
+  font-family: inherit;
+}
+.report-copy:active { transform: scale(0.98); }
 
 @media (prefers-reduced-motion: reduce) {
   * { transition: none !important; }

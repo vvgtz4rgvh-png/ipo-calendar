@@ -133,16 +133,25 @@
     return "";
   }
 
+  function brokerRowHTML(ipo, b, idx) {
+    const isPending = b.status === "抽選待ち";
+    const statusEl = isPending
+      ? `<button type="button" class="broker-status tappable"
+           data-code="${ipo.code}" data-name="${ipo.name}"
+           data-broker="${b.name}" data-shares="${b.shares}" data-idx="${idx}">
+           ${b.status}
+         </button>`
+      : `<span class="broker-status ${brokerStatusClass(b.status)}">${b.status}</span>`;
+
+    return `
+      <div class="broker-row">
+        <span><span class="broker-name">${b.name}</span><span class="broker-shares">${b.shares}株・${b.account}</span></span>
+        ${statusEl}
+      </div>`;
+  }
+
   function activeCardHTML(ipo, phase) {
-    const brokersHTML = ipo.brokers
-      .map(
-        (b) => `
-        <div class="broker-row">
-          <span><span class="broker-name">${b.name}</span><span class="broker-shares">${b.shares}株・${b.account}</span></span>
-          <span class="broker-status ${brokerStatusClass(b.status)}">${b.status}</span>
-        </div>`
-      )
-      .join("");
+    const brokersHTML = ipo.brokers.map((b, idx) => brokerRowHTML(ipo, b, idx)).join("");
 
     return `
       <article class="ipo-card">
@@ -240,6 +249,83 @@
   document.addEventListener("click", (e) => {
     const link = e.target.closest(".btn-calendar");
     if (link) showToast("カレンダーファイルをダウンロードしました");
+  });
+
+  // ---------- Win/Lose tap-to-report ----------
+  const reportLines = [];
+  let reportPanel = null;
+
+  function buildReportPanel() {
+    reportPanel = document.createElement("div");
+    reportPanel.id = "report-panel";
+    reportPanel.innerHTML = `
+      <div class="report-head">
+        <span class="report-title">報告メモ（<span id="report-count">0</span>件）</span>
+        <button type="button" class="report-clear" id="report-clear">クリア</button>
+      </div>
+      <textarea id="report-text" readonly></textarea>
+      <button type="button" class="report-copy" id="report-copy">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="8" y="8" width="12" height="12" rx="2"/><path d="M4 16V5a1 1 0 0 1 1-1h11"/></svg>
+        コピーしてClaudeに貼り付ける
+      </button>
+    `;
+    document.body.appendChild(reportPanel);
+
+    reportPanel.querySelector("#report-clear").addEventListener("click", () => {
+      reportLines.length = 0;
+      updateReportPanel();
+    });
+    reportPanel.querySelector("#report-copy").addEventListener("click", async () => {
+      const text = reportLines.join("\n");
+      try {
+        await navigator.clipboard.writeText(text);
+        showToast("コピーしました。チャットに貼り付けてください");
+      } catch {
+        const ta = reportPanel.querySelector("#report-text");
+        ta.select();
+        document.execCommand("copy");
+        showToast("コピーしました。チャットに貼り付けてください");
+      }
+    });
+  }
+
+  function updateReportPanel() {
+    if (!reportPanel) {
+      if (reportLines.length === 0) return;
+      buildReportPanel();
+    }
+    reportPanel.hidden = reportLines.length === 0;
+    reportPanel.querySelector("#report-count").textContent = reportLines.length;
+    reportPanel.querySelector("#report-text").value = reportLines.join("\n");
+  }
+
+  document.addEventListener("click", (e) => {
+    // Step 1: tap a pending status -> reveal 当選/落選 choice buttons
+    const tapBtn = e.target.closest(".broker-status.tappable");
+    if (tapBtn && !tapBtn.classList.contains("choosing")) {
+      tapBtn.classList.add("choosing");
+      tapBtn.innerHTML = `
+        <span class="broker-choice-group">
+          <button type="button" class="broker-choice win" data-result="当選">当選</button>
+          <button type="button" class="broker-choice lose" data-result="落選">落選</button>
+        </span>`;
+      return;
+    }
+
+    // Step 2: tap 当選/落選 -> record
+    const choice = e.target.closest(".broker-choice");
+    if (choice) {
+      const wrapper = choice.closest(".broker-status");
+      const result = choice.dataset.result;
+      const { code, name, broker, shares } = wrapper.dataset;
+      reportLines.push(`${code} ${name} / ${broker}${shares}株 → ${result}`);
+      updateReportPanel();
+
+      wrapper.classList.remove("tappable", "choosing");
+      wrapper.classList.add(result === "当選" ? "win" : "lose");
+      wrapper.outerHTML = `<span class="broker-status ${result === "当選" ? "win" : "lose"} pending-sync">${result}<span class="pending-dot" title="未反映（Pushするまではこの端末だけの表示）"></span></span>`;
+      showToast(`${broker} を「${result}」として記録しました`);
+    }
   });
 
   // ---------- Load data ----------
