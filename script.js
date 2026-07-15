@@ -127,6 +127,43 @@
       </div>`;
   }
 
+  // ---------- Broker links ----------
+  const BROKER_LINKS = {
+    "SBI証券": "https://www.sbisec.co.jp/",
+    "楽天証券": "https://www.rakuten-sec.co.jp/",
+    "マネックス証券": "https://www.monex.co.jp/",
+    "松井証券": "https://www.matsui.co.jp/",
+    "SMBC日興証券": "https://www.smbcnikko.co.jp/",
+    "auカブコム証券": "https://kabu.com/",
+    "三菱UFJ eスマート証券": "https://www.sc.mufg.jp/",
+    "みずほ証券": "https://www.mizuho-sc.com/",
+    "野村證券": "https://www.nomura.co.jp/",
+    "DMM株": "https://kabu.dmm.com/",
+    "SBIネオトレード証券": "https://www.sbineotrade.co.jp/",
+  };
+
+  function brokerNameHTML(name) {
+    const url = BROKER_LINKS[name];
+    if (!url) return name;
+    return `<a class="broker-link" href="${url}" target="_blank" rel="noopener">${name}</a>`;
+  }
+
+  // ---------- Auto profit/pct calculation (issuePrice -> firstDayPrice) ----------
+  function computeResult(ipo) {
+    const hasAuto = typeof ipo.issuePrice === "number" && typeof ipo.firstDayPrice === "number";
+    if (hasAuto) {
+      const winningShares = (ipo.brokers || [])
+        .filter((b) => b.status === "当選")
+        .reduce((sum, b) => sum + (b.shares || 0), 0);
+      const pct = ((ipo.firstDayPrice - ipo.issuePrice) / ipo.issuePrice) * 100;
+      const profit = winningShares * (ipo.firstDayPrice - ipo.issuePrice);
+      return { pct: Math.round(pct * 10) / 10, profit, winningShares, auto: true };
+    }
+    const pct = typeof ipo.firstDayChangePct === "number" ? ipo.firstDayChangePct : null;
+    const profit = typeof ipo.profit === "number" ? ipo.profit : null;
+    return { pct, profit, winningShares: null, auto: false };
+  }
+
   function brokerStatusClass(status) {
     if (status === "当選") return "win";
     if (status === "落選") return "lose";
@@ -145,7 +182,7 @@
 
     return `
       <div class="broker-row">
-        <span><span class="broker-name">${b.name}</span><span class="broker-shares">${b.shares}株・${b.account}</span></span>
+        <span><span class="broker-name">${brokerNameHTML(b.name)}</span><span class="broker-shares">${b.shares}株・${b.account}</span></span>
         ${statusEl}
       </div>`;
   }
@@ -175,17 +212,20 @@
   }
 
   function pastCardHTML(ipo) {
-    const pct = ipo.firstDayChangePct;
-    const hasPct = typeof pct === "number";
-    const pctClass = hasPct ? (pct >= 0 ? "pos" : "neg") : "";
-    const pctText = hasPct ? `${pct >= 0 ? "+" : ""}${pct}%` : "―";
-    const profitText = typeof ipo.profit === "number" ? fmtYen(ipo.profit) : "―";
+    const result = computeResult(ipo);
+    const hasPct = typeof result.pct === "number";
+    const pctClass = hasPct ? (result.pct >= 0 ? "pos" : "neg") : "";
+    const pctText = hasPct ? `${result.pct >= 0 ? "+" : ""}${result.pct}%` : "―";
+    const profitText = typeof result.profit === "number" ? fmtYen(result.profit) : "―";
+    const priceLine =
+      result.auto ? `<div class="result-price">${ipo.issuePrice}円 → ${ipo.firstDayPrice}円</div>` : "";
 
     return `
       <div class="result-card">
         <div class="ipo-name-block">
           <div class="ipo-code">${ipo.code}</div>
           <div class="ipo-name">${ipo.name}</div>
+          ${priceLine}
         </div>
         <div class="result-figures">
           <div class="result-pct ${pctClass}">${pctText}</div>
@@ -238,7 +278,53 @@
     `;
   }
 
-  // ---------- Past section toggle ----------
+  // ---------- Monthly profit chart ----------
+  function renderMonthlyChart(ipos, year) {
+    const section = document.getElementById("monthly-section");
+    const container = document.getElementById("monthly-chart");
+    const past = ipos.filter((ipo) => {
+      if (!ipo.listed || !ipo.listingDate) return false;
+      return toDate(ipo.listingDate).getFullYear() === year;
+    });
+
+    if (past.length === 0) {
+      section.hidden = true;
+      return;
+    }
+    section.hidden = false;
+
+    const monthTotals = Array(12).fill(0);
+    past.forEach((ipo) => {
+      const m = toDate(ipo.listingDate).getMonth();
+      const result = computeResult(ipo);
+      monthTotals[m] += typeof result.profit === "number" ? result.profit : 0;
+    });
+
+    const maxAbs = Math.max(1, ...monthTotals.map((v) => Math.abs(v)));
+    const barMaxHeight = 90;
+    const barWidth = 20;
+    const gap = (320 - barWidth * 12) / 13;
+    const svgHeight = 150;
+    const zeroY = 30 + barMaxHeight;
+
+    let bars = "";
+    monthTotals.forEach((v, i) => {
+      const x = gap + i * (barWidth + gap);
+      const h = maxAbs === 0 ? 0 : (Math.abs(v) / maxAbs) * barMaxHeight;
+      const y = v >= 0 ? zeroY - h : zeroY;
+      const color = v > 0 ? "var(--green)" : v < 0 ? "var(--red)" : "var(--border)";
+      bars += `<rect x="${x}" y="${y}" width="${barWidth}" height="${Math.max(h, 1)}" rx="4" fill="${color}"></rect>`;
+      bars += `<text x="${x + barWidth / 2}" y="${svgHeight - 6}" text-anchor="middle" class="chart-month-label">${i + 1}</text>`;
+    });
+
+    container.innerHTML = `
+      <svg viewBox="0 0 320 ${svgHeight}" width="100%" role="img" aria-label="${year}年の月別損益グラフ">
+        <line x1="0" y1="${zeroY}" x2="320" y2="${zeroY}" class="chart-baseline" />
+        ${bars}
+      </svg>`;
+  }
+
+
   els.pastToggle.addEventListener("click", () => {
     const expanded = els.pastToggle.getAttribute("aria-expanded") === "true";
     els.pastToggle.setAttribute("aria-expanded", String(!expanded));
@@ -340,6 +426,7 @@
       renderActive(data.ipos, today);
       renderPast(data.ipos);
       renderStats(data.annualSummary);
+      renderMonthlyChart(data.ipos, today.getFullYear());
     } catch (err) {
       els.activeList.innerHTML = "";
       els.activeEmpty.hidden = false;

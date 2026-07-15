@@ -558,6 +558,32 @@ html.unlocked .app {
 }
 .report-copy:active { transform: scale(0.98); }
 
+.broker-link {
+  color: inherit;
+  text-decoration: none;
+  border-bottom: 1px dotted var(--text-faint);
+}
+.broker-link:active { opacity: 0.6; }
+
+.result-price {
+  font-size: 11px;
+  color: var(--text-faint);
+  margin-top: 1px;
+}
+
+.monthly-chart-card {
+  background: var(--card);
+  border-radius: 18px;
+  box-shadow: var(--shadow);
+  padding: 16px;
+}
+.chart-baseline { stroke: var(--border); stroke-width: 1; }
+.chart-month-label {
+  font-size: 8px;
+  fill: var(--text-faint);
+  font-family: inherit;
+}
+
 @media (prefers-reduced-motion: reduce) {
   * { transition: none !important; }
 }

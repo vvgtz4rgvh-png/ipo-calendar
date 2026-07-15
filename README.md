@@ -43,14 +43,31 @@ ipo-calendar/
 | `purchaseStart` / `purchaseEnd` | 購入申込期間 |
 | `listed` | 上場済みなら `true` |
 | `listingDate` | 上場日（上場済みのみ） |
-| `firstDayChangePct` | 初値騰落率（%） |
-| `profit` | 損益（円） |
+| `issuePrice` | 公開価格（円）。上場済みで入力すると初値騰落率・損益を自動計算 |
+| `firstDayPrice` | 初値（円） |
+| `firstDayChangePct` / `profit` | `issuePrice`/`firstDayPrice`が無い場合の手入力用（後方互換） |
 | `brokers` | 申込先の配列（`name`, `account`, `shares`, `status`） |
 
-`annualSummary` で年間の申込件数・当選件数・利益を管理します。
+`annualSummary` で年間の申込件数・当選件数・利益を管理します（現状は手動更新）。
 
-## 今後の拡張（Phase2以降の候補）
+`issuePrice` と `firstDayPrice` を入力すると、初値騰落率・損益（当選した証券会社の株数分）・月別損益グラフが自動計算されます。手動で`firstDayChangePct`/`profit`を入れることもできますが、基本的には公開価格と初値を入力するだけで済むようにしています。
 
-- 当選／落選をタップで記録するUI
-- 証券会社サイトへのショートカットリンク
+### 証券会社リンク
+
+`brokers`の`name`が下記のいずれかに一致すると、カード内の証券会社名がリンクになります（各社トップページへ）。
+SBI証券／楽天証券／マネックス証券／松井証券／SMBC日興証券／auカブコム証券／三菱UFJ eスマート証券／みずほ証券／野村證券／DMM株／SBIネオトレード証券
+
+### 合言葉の変更方法
+
+ブラウザのコンソール（開発者ツール）で以下を実行し、表示されたハッシュ値を `data/auth.json` の `passcodeHash` に設定してください。
+
+```js
+crypto.subtle.digest("SHA-256", new TextEncoder().encode("新しい合言葉"))
+  .then(buf => console.log(Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2,"0")).join("")))
+```
+
+## 今後の拡張候補
+
 - 銘柄アーカイブ（`archive/`）への自動移動
+- 抽選資金の合計表示
+- 上場済IPOの年別グループ化
