@@ -66,6 +66,12 @@ crypto.subtle.digest("SHA-256", new TextEncoder().encode("新しい合言葉"))
   .then(buf => console.log(Array.from(new Uint8Array(buf)).map(b => b.toString(16).padStart(2,"0")).join("")))
 ```
 
+## キャッシュ対策（バージョニング）
+
+`index.html`の`style.css` / `script.js` / `auth.js`の読み込みには `?v=2.2.0` のようなバージョン番号を付けています。今後CSSやJSを更新するときは、この番号を更新するとブラウザが確実に新しいファイルを読み込み直します（PCでのハード再読み込みが基本的に不要になります）。`service-worker.js`の`CORE_ASSETS`と`CACHE_NAME`も同じ番号に揃えてください。
+
+この番号の更新は、今後Claudeが更新ファイルを作成する際に合わせて行います。
+
 ## 今後の拡張候補
 
 - 銘柄アーカイブ（`archive/`）への自動移動

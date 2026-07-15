@@ -1,10 +1,10 @@
-const CACHE_NAME = "ipo-manager-v2.1.0";
+const CACHE_NAME = "ipo-manager-v2.2.0";
 const CORE_ASSETS = [
   "./",
   "./index.html",
-  "./style.css",
-  "./script.js",
-  "./auth.js",
+  "./style.css?v=2.2.0",
+  "./script.js?v=2.2.0",
+  "./auth.js?v=2.2.0",
   "./manifest.json",
   "./data/ipos.json",
   "./data/auth.json",
