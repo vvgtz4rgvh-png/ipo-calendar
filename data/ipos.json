@@ -14,32 +14,49 @@
       "firstDayChangePct": null,
       "profit": null,
       "brokers": [
-        { "name": "SBI証券", "account": "本人", "shares": 100, "status": "抽選待ち" },
-        { "name": "楽天証券", "account": "本人", "shares": 100, "status": "抽選待ち" }
+        { "name": "SBI証券", "account": "本人", "shares": 100, "status": "落選" },
+        { "name": "楽天証券", "account": "本人", "shares": 100, "status": "落選" }
+      ]
+    },
+    {
+      "code": "603A",
+      "name": "アイ・グリッド・ソリューションズ",
+      "market": "東証グロース",
+      "bbStart": "2026-07-13",
+      "bbEnd": "2026-07-16",
+      "lotteryDate": "2026-07-17",
+      "purchaseStart": "2026-07-21",
+      "purchaseEnd": "2026-07-24",
+      "listed": false,
+      "listingDate": null,
+      "firstDayChangePct": null,
+      "profit": null,
+      "brokers": [
+        { "name": "SBI証券", "account": "本人", "shares": 100, "status": "抽選待ち" }
       ]
     },
     {
       "code": "604A",
       "name": "ビーエイブル",
-      "market": "東証グロース",
-      "bbStart": "2026-06-20",
-      "bbEnd": "2026-06-24",
-      "lotteryDate": "2026-06-27",
-      "purchaseStart": "2026-06-28",
-      "purchaseEnd": "2026-07-01",
-      "listed": true,
-      "listingDate": "2026-07-03",
-      "firstDayChangePct": 18.4,
-      "profit": 42500,
+      "market": "東証スタンダード",
+      "bbStart": "2026-07-13",
+      "bbEnd": "2026-07-17",
+      "lotteryDate": "2026-07-21",
+      "purchaseStart": "2026-07-22",
+      "purchaseEnd": "2026-07-27",
+      "listed": false,
+      "listingDate": null,
+      "firstDayChangePct": null,
+      "profit": null,
       "brokers": [
-        { "name": "SBI証券", "account": "本人", "shares": 100, "status": "当選" }
+        { "name": "SBI証券", "account": "本人", "shares": 500, "status": "抽選待ち" }
       ]
     }
   ],
   "annualSummary": {
     "year": 2026,
-    "applications": 28,
-    "wins": 4,
-    "profit": 152000
+    "applications": 3,
+    "wins": 0,
+    "profit": 0
   }
 }
