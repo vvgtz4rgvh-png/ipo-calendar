@@ -1,23 +1,45 @@
-[
-  {
-    "code": "593A",
-    "name": "ティアフォー",
-    "brokers": [
-      "SBI証券",
-      "楽天証券"
-    ],
-    "bb": "2026-07-06",
-    "lottery": "2026-07-13",
-    "purchase": "2026-07-14"
-  },
-  {
-    "code": "604A",
-    "name": "ビーエイブル",
-    "brokers": [
-      "申込予定"
-    ],
-    "bb": "2026-07-13",
-    "lottery": "2026-07-21",
-    "purchase": "2026-07-22"
+{
+  "ipos": [
+    {
+      "code": "593A",
+      "name": "ティアフォー",
+      "market": "東証グロース",
+      "bbStart": "2026-07-06",
+      "bbEnd": "2026-07-10",
+      "lotteryDate": "2026-07-13",
+      "purchaseStart": "2026-07-14",
+      "purchaseEnd": "2026-07-17",
+      "listed": false,
+      "listingDate": null,
+      "firstDayChangePct": null,
+      "profit": null,
+      "brokers": [
+        { "name": "SBI証券", "account": "本人", "shares": 100, "status": "抽選待ち" },
+        { "name": "楽天証券", "account": "本人", "shares": 100, "status": "抽選待ち" }
+      ]
+    },
+    {
+      "code": "604A",
+      "name": "ビーエイブル",
+      "market": "東証グロース",
+      "bbStart": "2026-06-20",
+      "bbEnd": "2026-06-24",
+      "lotteryDate": "2026-06-27",
+      "purchaseStart": "2026-06-28",
+      "purchaseEnd": "2026-07-01",
+      "listed": true,
+      "listingDate": "2026-07-03",
+      "firstDayChangePct": 18.4,
+      "profit": 42500,
+      "brokers": [
+        { "name": "SBI証券", "account": "本人", "shares": 100, "status": "当選" }
+      ]
+    }
+  ],
+  "annualSummary": {
+    "year": 2026,
+    "applications": 28,
+    "wins": 4,
+    "profit": 152000
   }
-]
+}
