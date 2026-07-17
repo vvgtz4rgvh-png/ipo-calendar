@@ -51,11 +51,30 @@
       "brokers": [
         { "name": "SBI証券", "account": "本人", "shares": 500, "status": "抽選待ち" }
       ]
+    },
+    {
+      "code": "607A",
+      "name": "エブリー",
+      "market": "東証グロース",
+      "bbStart": "2026-07-17",
+      "bbEnd": "2026-07-24",
+      "lotteryDate": "2026-07-27",
+      "purchaseStart": "2026-07-28",
+      "purchaseEnd": "2026-07-31",
+      "listed": false,
+      "listingDate": null,
+      "firstDayChangePct": null,
+      "profit": null,
+      "brokers": [
+        { "name": "SMBC日興証券", "account": "本人", "shares": 500, "status": "抽選待ち" },
+        { "name": "松井証券", "account": "本人", "shares": 1000, "status": "抽選待ち" },
+        { "name": "SBI証券", "account": "本人", "shares": 500, "status": "抽選待ち" }
+      ]
     }
   ],
   "annualSummary": {
     "year": 2026,
-    "applications": 3,
+    "applications": 4,
     "wins": 0,
     "profit": 0
   }
