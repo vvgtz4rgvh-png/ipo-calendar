@@ -10,12 +10,22 @@
       "purchaseStart": "2026-07-14",
       "purchaseEnd": "2026-07-17",
       "listed": false,
-      "listingDate": null,
+      "listingDate": "2026-07-22",
       "firstDayChangePct": null,
       "profit": null,
       "brokers": [
-        { "name": "SBI証券", "account": "本人", "shares": 100, "status": "落選" },
-        { "name": "楽天証券", "account": "本人", "shares": 100, "status": "落選" }
+        {
+          "name": "SBI証券",
+          "account": "本人",
+          "shares": 100,
+          "status": "落選"
+        },
+        {
+          "name": "楽天証券",
+          "account": "本人",
+          "shares": 100,
+          "status": "落選"
+        }
       ]
     },
     {
@@ -28,11 +38,16 @@
       "purchaseStart": "2026-07-21",
       "purchaseEnd": "2026-07-24",
       "listed": false,
-      "listingDate": null,
+      "listingDate": "2026-07-29",
       "firstDayChangePct": null,
       "profit": null,
       "brokers": [
-        { "name": "SBI証券", "account": "本人", "shares": 100, "status": "落選" }
+        {
+          "name": "SBI証券",
+          "account": "本人",
+          "shares": 100,
+          "status": "落選"
+        }
       ]
     },
     {
@@ -45,11 +60,16 @@
       "purchaseStart": "2026-07-22",
       "purchaseEnd": "2026-07-27",
       "listed": false,
-      "listingDate": null,
+      "listingDate": "2026-07-29",
       "firstDayChangePct": null,
       "profit": null,
       "brokers": [
-        { "name": "SBI証券", "account": "本人", "shares": 500, "status": "抽選待ち" }
+        {
+          "name": "SBI証券",
+          "account": "本人",
+          "shares": 500,
+          "status": "抽選待ち"
+        }
       ]
     },
     {
@@ -62,13 +82,28 @@
       "purchaseStart": "2026-07-28",
       "purchaseEnd": "2026-07-31",
       "listed": false,
-      "listingDate": null,
+      "listingDate": "2026-08-04",
       "firstDayChangePct": null,
       "profit": null,
       "brokers": [
-        { "name": "SMBC日興証券", "account": "本人", "shares": 500, "status": "抽選待ち" },
-        { "name": "松井証券", "account": "本人", "shares": 1000, "status": "抽選待ち" },
-        { "name": "SBI証券", "account": "本人", "shares": 500, "status": "抽選待ち" }
+        {
+          "name": "SMBC日興証券",
+          "account": "本人",
+          "shares": 500,
+          "status": "抽選待ち"
+        },
+        {
+          "name": "松井証券",
+          "account": "本人",
+          "shares": 1000,
+          "status": "抽選待ち"
+        },
+        {
+          "name": "SBI証券",
+          "account": "本人",
+          "shares": 500,
+          "status": "抽選待ち"
+        }
       ]
     }
   ],

@@ -42,7 +42,7 @@ ipo-calendar/
 | `lotteryDate` | 抽選日 |
 | `purchaseStart` / `purchaseEnd` | 購入申込期間 |
 | `listed` | 上場済みなら `true` |
-| `listingDate` | 上場日（上場済みのみ） |
+| `listingDate` | 上場日（予定日でOK。判明した時点で入力するとタイムライン4番目の「上場」欄とカレンダーに反映されます） |
 | `issuePrice` | 公開価格（円）。上場済みで入力すると初値騰落率・損益を自動計算 |
 | `firstDayPrice` | 初値（円） |
 | `firstDayChangePct` / `profit` | `issuePrice`/`firstDayPrice`が無い場合の手入力用（後方互換） |
@@ -68,9 +68,16 @@ crypto.subtle.digest("SHA-256", new TextEncoder().encode("新しい合言葉"))
 
 ## キャッシュ対策（バージョニング）
 
-`index.html`の`style.css` / `script.js` / `auth.js`の読み込みには `?v=2.2.0` のようなバージョン番号を付けています。今後CSSやJSを更新するときは、この番号を更新するとブラウザが確実に新しいファイルを読み込み直します（PCでのハード再読み込みが基本的に不要になります）。`service-worker.js`の`CORE_ASSETS`と`CACHE_NAME`も同じ番号に揃えてください。
+`index.html`の`style.css` / `script.js` / `auth.js`の読み込みには `?v=2.4.0` のようなバージョン番号を付けています。今後CSSやJSを更新するときは、この番号を更新するとブラウザが確実に新しいファイルを読み込み直します（PCでのハード再読み込みが基本的に不要になります）。`service-worker.js`の`CORE_ASSETS`と`CACHE_NAME`も同じ番号に揃えてください。
 
 この番号の更新は、今後Claudeが更新ファイルを作成する際に合わせて行います。
+
+## 表示の仕組み
+
+- **管理中IPO**：BB〜購入までのアクションが残っている銘柄
+- **手続き完了（上場待ち）**：購入申込まで終わり、あとは上場を待つだけの銘柄。タップするまで中身は閉じています
+- **上場済IPO**：`listed: true`にした銘柄。折りたたみ表示
+- 「今日やること」の購入申込は、証券会社が全て「落選」の銘柄はカウントされません（購入の必要がないため）
 
 ## 今後の拡張候補
 

@@ -61,6 +61,7 @@
     const lot = toDate(ipo.lotteryDate);
     const pStart = toDate(ipo.purchaseStart);
     const pEnd = toDate(ipo.purchaseEnd);
+    const listingD = ipo.listingDate ? toDate(ipo.listingDate) : null;
 
     if (today < bbStart) return { key: "before", label: "募集前", pill: "gray", step: -1 };
     if (today <= bbEnd) return { key: "bb", label: "BB受付中", pill: "green", step: 0 };
@@ -68,7 +69,9 @@
     if (today.getTime() === lot.getTime()) return { key: "lottery", label: "抽選日", pill: "amber", step: 1 };
     if (today < pStart) return { key: "waiting-purchase", label: "購入待ち", pill: "gray", step: 2 };
     if (today <= pEnd) return { key: "purchase", label: "購入期間中", pill: "blue", step: 2 };
-    return { key: "done", label: "手続き完了", pill: "gray", step: 3 };
+    if (listingD && today < listingD) return { key: "waiting-listing", label: "上場待ち", pill: "blue", step: 3 };
+    if (listingD && today.getTime() === listingD.getTime()) return { key: "listing-day", label: "上場日", pill: "blue", step: 3 };
+    return { key: "done", label: "手続き完了", pill: "gray", step: 4 };
   }
 
   // ---------- Rendering ----------
@@ -79,7 +82,10 @@
       const phase = getPhase(ipo, today);
       if (phase.key === "bb") bbCount++;
       if (phase.key === "lottery") lotteryCount++;
-      if (phase.key === "purchase") purchaseCount++;
+      if (phase.key === "purchase") {
+        const allLost = (ipo.brokers || []).length > 0 && ipo.brokers.every((b) => b.status === "落選");
+        if (!allLost) purchaseCount++;
+      }
     });
 
     els.todayGrid.innerHTML = `
@@ -103,13 +109,18 @@
       { label: "BB", date: `${fmtMD(ipo.bbStart)}〜${fmtMD(ipo.bbEnd)}` },
       { label: "抽選", date: fmtMD(ipo.lotteryDate) },
       { label: "購入", date: `${fmtMD(ipo.purchaseStart)}〜${fmtMD(ipo.purchaseEnd)}` },
+      { label: "上場", date: ipo.listingDate ? fmtMD(ipo.listingDate) : "未定" },
     ];
     const currentStep = phase.step;
-    const fillPct = currentStep < 0 ? 0 : Math.min(currentStep, 2) / 2 * 100;
+    const n = steps.length;
+    const insetPct = 100 / (2 * n);
+    const spanPct = 100 - 2 * insetPct;
+    const fraction = currentStep < 0 ? 0 : Math.min(currentStep, n - 1) / (n - 1);
+    const fillPct = fraction * spanPct;
 
     const stepsHTML = steps
       .map((s, i) => {
-        const state = i < currentStep ? "done" : i === currentStep ? "current" : "";
+        const state = i < currentStep ? "done" : i === currentStep && currentStep <= 3 ? "current" : "";
         return `
           <div class="timeline-step ${state}">
             <div class="timeline-dot"></div>
@@ -120,7 +131,7 @@
       .join("");
 
     return `
-      <div class="timeline">
+      <div class="timeline timeline-4">
         <div class="timeline-track"></div>
         <div class="timeline-track-fill" style="width:${fillPct}%"></div>
         ${stepsHTML}
@@ -235,19 +246,31 @@
   }
 
   function renderActive(ipos, today) {
-    const active = ipos.filter((ipo) => !ipo.listed);
-    els.activeCount.textContent = `${active.length}件`;
+    const notListed = ipos.filter((ipo) => !ipo.listed);
+    const inProgress = notListed.filter((ipo) => getPhase(ipo, today).step < 3);
+    const completed = notListed.filter((ipo) => getPhase(ipo, today).step >= 3);
 
-    if (active.length === 0) {
+    els.activeCount.textContent = `${inProgress.length}件`;
+    if (inProgress.length === 0) {
       els.activeList.innerHTML = "";
       els.activeEmpty.hidden = false;
-      return;
+    } else {
+      els.activeEmpty.hidden = true;
+      els.activeList.innerHTML = inProgress
+        .map((ipo) => activeCardHTML(ipo, getPhase(ipo, today)))
+        .join("");
     }
-    els.activeEmpty.hidden = true;
 
-    els.activeList.innerHTML = active
-      .map((ipo) => activeCardHTML(ipo, getPhase(ipo, today)))
-      .join("");
+    const completedSection = document.getElementById("completed-section");
+    if (completed.length === 0) {
+      completedSection.hidden = true;
+    } else {
+      completedSection.hidden = false;
+      document.getElementById("completed-count").textContent = `${completed.length}件`;
+      document.getElementById("completed-list").innerHTML = completed
+        .map((ipo) => activeCardHTML(ipo, getPhase(ipo, today)))
+        .join("");
+    }
   }
 
   function renderPast(ipos) {
@@ -374,6 +397,13 @@
     const expanded = els.pastToggle.getAttribute("aria-expanded") === "true";
     els.pastToggle.setAttribute("aria-expanded", String(!expanded));
     els.pastList.hidden = expanded;
+  });
+
+  document.getElementById("completed-toggle").addEventListener("click", (e) => {
+    const btn = e.currentTarget;
+    const expanded = btn.getAttribute("aria-expanded") === "true";
+    btn.setAttribute("aria-expanded", String(!expanded));
+    document.getElementById("completed-list").hidden = expanded;
   });
 
   // ---------- Calendar link feedback ----------

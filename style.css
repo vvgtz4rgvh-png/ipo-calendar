@@ -219,6 +219,7 @@ html.unlocked .app {
   margin-top: 16px;
   position: relative;
 }
+.timeline.timeline-4 { grid-template-columns: 1fr 1fr 1fr 1fr; }
 .timeline-track {
   position: absolute;
   top: 5px;
@@ -227,6 +228,7 @@ html.unlocked .app {
   height: 2px;
   background: var(--border);
 }
+.timeline.timeline-4 .timeline-track { left: calc(100% / 8); right: calc(100% / 8); }
 .timeline-track-fill {
   position: absolute;
   top: 5px;
@@ -235,6 +237,7 @@ html.unlocked .app {
   background: var(--accent);
   transition: width 0.3s ease;
 }
+.timeline.timeline-4 .timeline-track-fill { left: calc(100% / 8); }
 .timeline-step { text-align: center; position: relative; z-index: 1; }
 .timeline-dot {
   width: 12px;
@@ -582,6 +585,12 @@ html.unlocked .app {
   font-size: 8px;
   fill: var(--text-faint);
   font-family: inherit;
+}
+
+.collapsible-title-group {
+  display: flex;
+  align-items: center;
+  gap: 8px;
 }
 
 .secondary-total-card {
