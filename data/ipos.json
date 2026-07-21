@@ -32,7 +32,7 @@
       "firstDayChangePct": null,
       "profit": null,
       "brokers": [
-        { "name": "SBI証券", "account": "本人", "shares": 100, "status": "抽選待ち" }
+        { "name": "SBI証券", "account": "本人", "shares": 100, "status": "落選" }
       ]
     },
     {
