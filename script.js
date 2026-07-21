@@ -324,6 +324,51 @@
       </svg>`;
   }
 
+  // ---------- Secondary trades ----------
+  function computeSecondaryProfit(trade) {
+    const shares = Math.min(trade.buyShares, trade.sellShares);
+    return (trade.sellPrice - trade.buyPrice) * shares;
+  }
+
+  function secondaryCardHTML(trade) {
+    const profit = computeSecondaryProfit(trade);
+    const pctChange = ((trade.sellPrice - trade.buyPrice) / trade.buyPrice) * 100;
+    const pctClass = profit >= 0 ? "pos" : "neg";
+    const pctText = `${profit >= 0 ? "+" : ""}${Math.round(pctChange * 10) / 10}%`;
+
+    return `
+      <div class="result-card">
+        <div class="ipo-name-block">
+          <div class="ipo-code">${trade.code}</div>
+          <div class="ipo-name">${trade.name}</div>
+          <div class="result-price">${trade.buyPrice}円×${trade.buyShares} → ${trade.sellPrice}円×${trade.sellShares}</div>
+        </div>
+        <div class="result-figures">
+          <div class="result-pct ${pctClass}">${pctText}</div>
+          <div class="result-profit">${fmtYen(profit)}</div>
+        </div>
+      </div>`;
+  }
+
+  function renderSecondary(trades) {
+    const section = document.getElementById("secondary-section");
+    if (!trades || trades.length === 0) {
+      section.hidden = true;
+      return;
+    }
+    section.hidden = false;
+
+    document.getElementById("secondary-count").textContent = `${trades.length}件`;
+    document.getElementById("secondary-list").innerHTML = trades.map(secondaryCardHTML).join("");
+
+    const total = trades.reduce((sum, t) => sum + computeSecondaryProfit(t), 0);
+    const totalClass = total >= 0 ? "pos" : "neg";
+    document.getElementById("secondary-total").innerHTML = `
+      <span class="secondary-total-label">セカンダリー損益合計</span>
+      <span class="secondary-total-value ${totalClass}">${total >= 0 ? "+" : ""}${fmtYen(total)}</span>
+    `;
+  }
+
 
   els.pastToggle.addEventListener("click", () => {
     const expanded = els.pastToggle.getAttribute("aria-expanded") === "true";
@@ -427,6 +472,7 @@
       renderPast(data.ipos);
       renderStats(data.annualSummary);
       renderMonthlyChart(data.ipos, today.getFullYear());
+      renderSecondary(data.secondaryTrades);
     } catch (err) {
       els.activeList.innerHTML = "";
       els.activeEmpty.hidden = false;

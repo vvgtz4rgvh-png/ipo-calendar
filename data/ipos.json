@@ -72,6 +72,18 @@
       ]
     }
   ],
+  "secondaryTrades": [
+    {
+      "code": "598A",
+      "name": "チャットプラス",
+      "buyPrice": 2284,
+      "buyShares": 100,
+      "buyDate": null,
+      "sellPrice": 2610,
+      "sellShares": 100,
+      "sellDate": null
+    }
+  ],
   "annualSummary": {
     "year": 2026,
     "applications": 4,

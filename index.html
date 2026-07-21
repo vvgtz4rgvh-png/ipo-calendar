@@ -15,8 +15,8 @@
 <link rel="apple-touch-icon" href="assets/icons/apple-touch-icon.png">
 <link rel="icon" href="assets/icons/favicon-32.png" sizes="32x32">
 
-<link rel="stylesheet" href="style.css?v=2.2.0">
-<script src="auth.js?v=2.2.0" defer></script>
+<link rel="stylesheet" href="style.css?v=2.3.0">
+<script src="auth.js?v=2.3.0" defer></script>
 </head>
 <body>
 
@@ -69,6 +69,19 @@
       </div>
     </section>
 
+    <section aria-labelledby="secondary-heading" class="section" id="secondary-section" hidden>
+      <div class="section-head">
+        <h2 id="secondary-heading" class="section-title">セカンダリー投資</h2>
+        <span class="section-count" id="secondary-count">0件</span>
+      </div>
+      <div class="secondary-total-card" id="secondary-total">
+        <!-- JS: total profit -->
+      </div>
+      <div class="ipo-list" id="secondary-list">
+        <!-- JS: trade cards -->
+      </div>
+    </section>
+
     <section aria-labelledby="stats-heading" class="section">
       <h2 id="stats-heading" class="section-title">年間成績</h2>
       <div class="stats-grid" id="stats-grid">
@@ -88,7 +101,7 @@
   <footer class="app-footer">
     <span>IPO Manager</span>
     <span class="dot" aria-hidden="true">·</span>
-    <span>Version 2.2.0</span>
+    <span>Version 2.3.0</span>
     <span class="dot" aria-hidden="true">·</span>
     <span>GitHub Pages</span>
   </footer>
@@ -97,6 +110,6 @@
 
 <div class="toast" id="toast" role="status" aria-live="polite"></div>
 
-<script src="script.js?v=2.2.0"></script>
+<script src="script.js?v=2.3.0"></script>
 </body>
 </html>
